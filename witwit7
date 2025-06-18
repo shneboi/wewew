@@ -15,13 +15,14 @@ local Spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/atatu
 -- UI Setup
 local gui = Instance.new("ScreenGui")
 gui.ResetOnSpawn = false
-gui.Name = "RinHubUI"
+gui.Name = "RinScriptUI"
 gui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
 
 -- Main Frame
 local main = Instance.new("Frame")
 main.Size = UDim2.new(0, 260, 0, 310)
-main.Position = UDim2.new(0.5, -130, 0.5, -155)
+main.Position = UDim2.new(0.5, 0, 0.5, 0)
+main.AnchorPoint = Vector2.new(0.5, 0.5)
 main.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 main.BorderSizePixel = 0
 main.Parent = gui
@@ -42,6 +43,7 @@ bg.Size = UDim2.new(1, -10, 1, -40)
 bg.Position = UDim2.new(0, 5, 0, 35)
 bg.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 bg.BorderSizePixel = 0
+bg.Name = "Background"
 bg.Parent = main
 
 local bgCorner = Instance.new("UICorner")
@@ -58,7 +60,7 @@ local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, -60, 1, 0)
 title.Position = UDim2.new(0, 10, 0, 0)
 title.BackgroundTransparency = 1
-title.Text = "Rin Hub"
+title.Text = "Rin Script"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.TextSize = 16
 title.Font = Enum.Font.GothamBold
@@ -212,63 +214,7 @@ local function createPetInputWithDetails(tabFrame)
     end)
 end
 
-local function createTabInputWithButton(tabFrame, buttonText, callback)
-    local container = Instance.new("Frame")
-    container.Size = UDim2.new(0, 200, 0, 60)
-    container.Position = UDim2.new(0.5, 0, 0, 20)
-    container.AnchorPoint = Vector2.new(0.5, 0)
-    container.BackgroundTransparency = 1
-    container.Parent = tabFrame
-
-    local inputBox = Instance.new("TextBox")
-    inputBox.Size = UDim2.new(1, 0, 0, 30)
-    inputBox.PlaceholderText = "Enter name..."
-    inputBox.Text = ""
-    inputBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    inputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-    inputBox.Font = Enum.Font.Gotham
-    inputBox.TextSize = 14
-    inputBox.Parent = container
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 6)
-    corner.Parent = inputBox
-
-    local spawnButton = Instance.new("TextButton")
-    spawnButton.Size = UDim2.new(1, 0, 0, 25)
-    spawnButton.Position = UDim2.new(0, 0, 0, 35)
-    spawnButton.Text = buttonText
-    spawnButton.BackgroundColor3 = Color3.fromRGB(80, 160, 100)
-    spawnButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    spawnButton.Font = Enum.Font.GothamBold
-    spawnButton.TextSize = 14
-    spawnButton.Parent = container
-    local btnCorner = Instance.new("UICorner")
-    btnCorner.CornerRadius = UDim.new(0, 6)
-    btnCorner.Parent = spawnButton
-
-    spawnButton.MouseButton1Click:Connect(function()
-        if inputBox.Text ~= "" then
-            callback(inputBox.Text)
-        end
-    end)
-end
-
--- Create Tabs
-local petTab = createTabButton("Pet")
-local seedTab = createTabButton("Seed")
-local eggTab = createTabButton("Egg")
-local spinTab = createTabButton("Spin")
-
--- Input fields for manual spawning
-createPetInputWithDetails(petTab)
-createTabInputWithButton(seedTab, "Spawn Seed", Spawner.SpawnSeed)
-createTabInputWithButton(eggTab, "Spawn Egg", Spawner.SpawnEgg)
-createTabInputWithButton(spinTab, "Spin", Spawner.Spin)
-
--- Show first tab by default
-tabFrames["Pet"].Visible = true
-
--- Minimize
+-- Fix minimize to hide tabBar as well
 local minimized = false
 local originalSize = main.Size
 local minimizedSize = UDim2.new(0, 260, 0, 30)
@@ -280,46 +226,79 @@ minimizeBtn.MouseButton1Click:Connect(function()
     }):Play()
     contentFrame.Visible = not minimized
     bg.Visible = not minimized
+    tabBar.Visible = not minimized
 end)
 
--- Exit
-exitBtn.MouseButton1Click:Connect(function()
-    TS:Create(main, TweenInfo.new(0.2), {
-        Size = UDim2.new(0, 0, 0, 0),
-        Position = UDim2.new(0.5, 0, 0.5, 0)
-    }):Play()
-    task.wait(0.2)
-    gui:Destroy()
-end)
+-- Create Tabs
+local petTab = createTabButton("Pet")
+local seedTab = createTabButton("Seed")
+local eggTab = createTabButton("Egg")
+local spinTab = createTabButton("Spin")
 
--- Dragging
-local dragging, dragInput, dragStart, startPos
+-- Populate Pet tab
+createPetInputWithDetails(petTab)
 
-local function update(input)
-    local delta = input.Position - dragStart
-    main.Position = UDim2.new(
-        startPos.X.Scale,
-        startPos.X.Offset + delta.X,
-        startPos.Y.Scale,
-        startPos.Y.Offset + delta.Y
-    )
-end
+-- Populate Seed tab
+local seedInput = Instance.new("TextBox")
+seedInput.Size = UDim2.new(0, 200, 0, 25)
+seedInput.PlaceholderText = "Seed Name"
+seedInput.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+seedInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+seedInput.Font = Enum.Font.Gotham
+seedInput.TextSize = 14
+seedInput.Parent = seedTab
 
-titleBar.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = main.Position
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
+local seedCorner = Instance.new("UICorner")
+seedCorner.CornerRadius = UDim.new(0, 6)
+seedCorner.Parent = seedInput
+
+local seedSpawnBtn = Instance.new("TextButton")
+seedSpawnBtn.Size = UDim2.new(0, 200, 0, 25)
+seedSpawnBtn.Text = "Spawn Seed"
+seedSpawnBtn.BackgroundColor3 = Color3.fromRGB(80, 160, 100)
+seedSpawnBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+seedSpawnBtn.Font = Enum.Font.GothamBold
+seedSpawnBtn.TextSize = 14
+seedSpawnBtn.Parent = seedTab
+
+local seedBtnCorner = Instance.new("UICorner")
+seedBtnCorner.CornerRadius = UDim.new(0, 6)
+seedBtnCorner.Parent = seedSpawnBtn
+
+seedSpawnBtn.MouseButton1Click:Connect(function()
+    if seedInput.Text ~= "" then
+        Spawner.SpawnSeed(seedInput.Text)
     end
 end)
 
-UIS.InputChanged:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        update(input)
+-- Populate Egg tab
+local eggInput = seedInput:Clone()
+eggInput.PlaceholderText = "Egg Name"
+eggInput.Text = ""
+eggInput.Parent = eggTab
+
+local eggSpawnBtn = seedSpawnBtn:Clone()
+eggSpawnBtn.Text = "Spawn Egg"
+eggSpawnBtn.Parent = eggTab
+
+eggSpawnBtn.MouseButton1Click:Connect(function()
+    if eggInput.Text ~= "" then
+        Spawner.SpawnEgg(eggInput.Text)
+    end
+end)
+
+-- Populate Spin tab
+local spinInput = seedInput:Clone()
+spinInput.PlaceholderText = "Seed Name to Spin"
+spinInput.Text = ""
+spinInput.Parent = spinTab
+
+local spinBtn = seedSpawnBtn:Clone()
+spinBtn.Text = "Spin"
+spinBtn.Parent = spinTab
+
+spinBtn.MouseButton1Click:Connect(function()
+    if spinInput.Text ~= "" then
+        Spawner.Spin(spinInput.Text)
     end
 end)
