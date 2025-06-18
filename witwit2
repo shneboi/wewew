@@ -69,7 +69,7 @@ content.BackgroundTransparency = 1
 content.Parent = main
 
 local function createInput(placeholder)
-    local box = Instance.new(" ")
+    local box = Instance.new("TextBox")
     box.Size = UDim2.new(0, 220, 0, 36)
     box.PlaceholderText = placeholder
     box.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
