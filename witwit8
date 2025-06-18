@@ -1,0 +1,154 @@
+-- Services
+local Players = game:GetService("Players")
+local TS = game:GetService("TweenService")
+
+-- Load Spawner library
+local Spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/ataturk123/GardenSpawner/refs/heads/main/Spawner.lua"))()
+
+-- UI Setup
+local gui = Instance.new("ScreenGui")
+gui.ResetOnSpawn = false
+gui.Name = "PetSpawnerUI"
+gui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Main Frame
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0, 280, 0, 140)
+main.Position = UDim2.new(0.5, 0, 0.5, 0)
+main.AnchorPoint = Vector2.new(0.5, 0.5)
+main.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+main.BorderSizePixel = 0
+main.Parent = gui
+
+local mainCorner = Instance.new("UICorner")
+mainCorner.CornerRadius = UDim.new(0, 14)
+mainCorner.Parent = main
+
+local mainStroke = Instance.new("UIStroke")
+mainStroke.Color = Color3.fromRGB(80, 80, 80)
+mainStroke.Thickness = 2
+mainStroke.Transparency = 0.25
+mainStroke.Parent = main
+
+-- Header Container (pill shape with icon and text)
+local header = Instance.new("Frame")
+header.Size = UDim2.new(0, 150, 0, 32)
+header.Position = UDim2.new(0, 12, 0, 12)
+header.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+header.Parent = main
+
+local headerCorner = Instance.new("UICorner")
+headerCorner.CornerRadius = UDim.new(1, 0) -- max round for pill shape
+headerCorner.Parent = header
+
+local headerStroke = Instance.new("UIStroke")
+headerStroke.Color = Color3.fromRGB(90, 90, 90)
+headerStroke.Thickness = 1
+headerStroke.Transparency = 0.5
+headerStroke.Parent = header
+
+-- Material Icon (using a TextLabel for icon fallback)
+local icon = Instance.new("TextLabel")
+icon.Size = UDim2.new(0, 20, 0, 20)
+icon.Position = UDim2.new(0, 6, 0, 6)
+icon.BackgroundTransparency = 1
+icon.Font = Enum.Font.SourceSans -- fallback font; ideally use Material Icons font
+icon.Text = "🐾" -- paw print emoji substitute for pet icon if Material Icons is not available
+icon.TextSize = 18
+icon.TextColor3 = Color3.fromRGB(200, 200, 200)
+icon.Parent = header
+
+-- Header Label
+local headerLabel = Instance.new("TextLabel")
+headerLabel.Size = UDim2.new(1, -34, 1, 0)
+headerLabel.Position = UDim2.new(0, 30, 0, 0)
+headerLabel.BackgroundTransparency = 1
+headerLabel.Text = "Pet Spawner"
+headerLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
+headerLabel.TextSize = 14
+headerLabel.Font = Enum.Font.GothamBold
+headerLabel.TextXAlignment = Enum.TextXAlignment.Left
+headerLabel.Parent = header
+
+-- Input Container (rounded, dark grey, with border)
+local inputContainer = Instance.new("Frame")
+inputContainer.Size = UDim2.new(0, 256, 0, 36)
+inputContainer.Position = UDim2.new(0, 12, 0, 56)
+inputContainer.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+inputContainer.Parent = main
+
+local inputCorner = Instance.new("UICorner")
+inputCorner.CornerRadius = UDim.new(0, 12)
+inputCorner.Parent = inputContainer
+
+local inputStroke = Instance.new("UIStroke")
+inputStroke.Color = Color3.fromRGB(90, 90, 90)
+inputStroke.Thickness = 1
+inputStroke.Transparency = 0.4
+inputStroke.Parent = inputContainer
+
+-- Label inside input container - "Pet Name"
+local inputLabel = Instance.new("TextLabel")
+inputLabel.Size = UDim2.new(0, 80, 1, 0)
+inputLabel.Position = UDim2.new(0, 16, 0, 0)
+inputLabel.BackgroundTransparency = 1
+inputLabel.Text = "Pet Name"
+inputLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+inputLabel.TextSize = 14
+inputLabel.Font = Enum.Font.GothamSemibold
+inputLabel.TextXAlignment = Enum.TextXAlignment.Left
+inputLabel.Parent = inputContainer
+
+-- Actual Input Box (transparent background)
+local petNameInput = Instance.new("TextBox")
+petNameInput.Size = UDim2.new(0, 140, 1, 0)
+petNameInput.Position = UDim2.new(0, 96, 0, 0)
+petNameInput.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+petNameInput.TextColor3 = Color3.fromRGB(200, 200, 200)
+petNameInput.TextSize = 14
+petNameInput.Font = Enum.Font.Gotham
+petNameInput.PlaceholderText = "Raccoon"
+petNameInput.Text = ""
+petNameInput.ClearTextOnFocus = false
+petNameInput.Parent = inputContainer
+
+local petNameCorner = Instance.new("UICorner")
+petNameCorner.CornerRadius = UDim.new(0, 12)
+petNameCorner.Parent = petNameInput
+
+-- Spawn Button below input, full width
+local spawnBtn = Instance.new("TextButton")
+spawnBtn.Size = UDim2.new(0, 256, 0, 36)
+spawnBtn.Position = UDim2.new(0, 12, 0, 100)
+spawnBtn.BackgroundColor3 = Color3.fromRGB(70, 130, 90)
+spawnBtn.Text = "Spawn"
+spawnBtn.TextColor3 = Color3.fromRGB(240, 240, 240)
+spawnBtn.Font = Enum.Font.GothamBold
+spawnBtn.TextSize = 16
+spawnBtn.Parent = main
+
+local spawnCorner = Instance.new("UICorner")
+spawnCorner.CornerRadius = UDim.new(0, 14)
+spawnCorner.Parent = spawnBtn
+
+local spawnStroke = Instance.new("UIStroke")
+spawnStroke.Color = Color3.fromRGB(100, 170, 120)
+spawnStroke.Thickness = 1
+spawnStroke.Transparency = 0.5
+spawnStroke.Parent = spawnBtn
+
+-- Hover effect for spawn button
+spawnBtn.MouseEnter:Connect(function()
+    TS:Create(spawnBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(90, 160, 110)}):Play()
+end)
+spawnBtn.MouseLeave:Connect(function()
+    TS:Create(spawnBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(70, 130, 90)}):Play()
+end)
+
+-- SpawnButton functionality
+spawnBtn.MouseButton1Click:Connect(function()
+    if petNameInput.Text ~= "" then
+        -- Only spawn with pet name as example since age/weight are omitted in sample
+        Spawner.SpawnPet(petNameInput.Text, 1, 1) -- Pass default numbers for age & weight as placeholder
+    end
+end)
