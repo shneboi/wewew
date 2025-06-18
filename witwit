@@ -1,96 +1,180 @@
--- Place this in a LocalScript inside StarterGui
+-- Services
+local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
 
+-- Load Spawner library
 local Spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/ataturk123/GardenSpawner/refs/heads/main/Spawner.lua"))()
 
--- Create GUI
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "CustomSpawnerGUI"
-screenGui.ResetOnSpawn = false
-screenGui.IgnoreGuiInset = true
-screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+-- UI Setup
+local player = Players.LocalPlayer
+local gui = Instance.new("ScreenGui")
+gui.Name = "SpawnerUI"
+gui.ResetOnSpawn = false
+gui.Parent = player:WaitForChild("PlayerGui")
 
 -- Main Frame
-local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 300, 0, 400)
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
-mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-mainFrame.BorderSizePixel = 0
-mainFrame.Active = true
-mainFrame.Draggable = true
-mainFrame.Parent = screenGui
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0, 300, 0, 300)
+main.Position = UDim2.new(0.5, -150, 0.5, -150)
+main.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+main.BorderSizePixel = 0
+main.Parent = gui
 
--- Title
-local title = Instance.new("TextLabel")
-title.Text = "Pet & Seed Spawner"
-title.Size = UDim2.new(1, 0, 0, 40)
-title.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-title.TextColor3 = Color3.new(1, 1, 1)
-title.Font = Enum.Font.GothamBold
-title.TextSize = 20
-title.Parent = mainFrame
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0, 10)
+uiCorner.Parent = main
 
--- UIListLayout
-local layout = Instance.new("UIListLayout")
-layout.Padding = UDim.new(0, 5)
-layout.FillDirection = Enum.FillDirection.Vertical
-layout.SortOrder = Enum.SortOrder.LayoutOrder
-layout.Parent = mainFrame
+-- Tab Buttons
+local tabButtons = Instance.new("Frame")
+tabButtons.Size = UDim2.new(1, 0, 0, 30)
+tabButtons.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+tabButtons.BorderSizePixel = 0
+tabButtons.Parent = main
 
--- Function to create input field
-local function createInput(name, placeholder)
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.FillDirection = Enum.FillDirection.Horizontal
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Parent = tabButtons
+
+local contentFrame = Instance.new("Frame")
+contentFrame.Size = UDim2.new(1, 0, 1, -30)
+contentFrame.Position = UDim2.new(0, 0, 0, 30)
+contentFrame.BackgroundTransparency = 1
+contentFrame.Parent = main
+
+-- Tab creation function
+local tabs = {}
+local function createTab(name)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0, 100, 1, 0)
+    button.Text = name
+    button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 14
+    button.Parent = tabButtons
+
+    local page = Instance.new("Frame")
+    page.Size = UDim2.new(1, 0, 1, 0)
+    page.BackgroundTransparency = 1
+    page.Visible = false
+    page.Parent = contentFrame
+
+    button.MouseButton1Click:Connect(function()
+        for _, t in pairs(tabs) do
+            t.page.Visible = false
+            t.button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+        end
+        page.Visible = true
+        button.BackgroundColor3 = Color3.fromRGB(90, 90, 90)
+    end)
+
+    table.insert(tabs, {button = button, page = page})
+    return page
+end
+
+-- Create Tabs
+local petTab = createTab("Pet")
+local seedTab = createTab("Seed")
+local eggTab = createTab("Egg")
+
+-- Default to Pet Tab
+tabs[1].button:MouseButton1Click()
+
+-- UI utility function
+local function createInput(parent, placeholder, callback)
     local input = Instance.new("TextBox")
+    input.Size = UDim2.new(0, 260, 0, 30)
     input.PlaceholderText = placeholder
-    input.Text = ""
-    input.Size = UDim2.new(1, -20, 0, 30)
-    input.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-    input.TextColor3 = Color3.new(1, 1, 1)
+    input.TextColor3 = Color3.fromRGB(255, 255, 255)
+    input.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     input.Font = Enum.Font.Gotham
     input.TextSize = 14
     input.ClearTextOnFocus = false
-    input.Name = name
-    input.Parent = mainFrame
-    return input
+    input.Text = ""
+    input.Parent = parent
+
+    local uiCorner = Instance.new("UICorner")
+    uiCorner.CornerRadius = UDim.new(0, 6)
+    uiCorner.Parent = input
+
+    input.FocusLost:Connect(function()
+        callback(input.Text)
+    end)
 end
 
--- Function to create button
-local function createButton(text, callback)
-    local button = Instance.new("TextButton")
-    button.Text = text
-    button.Size = UDim2.new(1, -20, 0, 30)
-    button.BackgroundColor3 = Color3.fromRGB(70, 130, 180)
-    button.TextColor3 = Color3.new(1, 1, 1)
-    button.Font = Enum.Font.GothamBold
-    button.TextSize = 14
-    button.Parent = mainFrame
-    button.MouseButton1Click:Connect(callback)
-    return button
+local function createButton(parent, text, callback)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0, 260, 0, 30)
+    btn.Text = text
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.BackgroundColor3 = Color3.fromRGB(70, 130, 180)
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 14
+    btn.Parent = parent
+
+    local uiCorner = Instance.new("UICorner")
+    uiCorner.CornerRadius = UDim.new(0, 6)
+    uiCorner.Parent = btn
+
+    btn.MouseButton1Click:Connect(callback)
 end
 
--- Inputs
-local petNameBox = createInput("PetNameBox", "Pet Name (e.g. Raccoon)")
-local petWeightBox = createInput("PetWeightBox", "Weight (e.g. 1)")
-local petAgeBox = createInput("PetAgeBox", "Age (e.g. 2)")
-
-createButton("Spawn Pet", function()
-    local name = petNameBox.Text
-    local weight = tonumber(petWeightBox.Text) or 1
-    local age = tonumber(petAgeBox.Text) or 1
-    Spawner.SpawnPet(name, weight, age)
+-- Pet Tab
+local petName, petWeight, petAge = "Raccoon", 1, 1
+createInput(petTab, "Pet Name", function(val) petName = val end)
+createInput(petTab, "Pet Weight (number)", function(val) petWeight = tonumber(val) or 1 end)
+createInput(petTab, "Pet Age (number)", function(val) petAge = tonumber(val) or 1 end)
+createButton(petTab, "Spawn Pet", function()
+    Spawner.SpawnPet(petName, petWeight, petAge)
 end)
 
-local seedBox = createInput("SeedBox", "Seed Name (e.g. Carrot)")
-createButton("Spawn Seed", function()
-    Spawner.SpawnSeed(seedBox.Text)
+-- Seed Tab
+local seedName = ""
+createInput(seedTab, "Seed Name", function(val) seedName = val end)
+createButton(seedTab, "Spawn Seed", function()
+    if seedName ~= "" then
+        Spawner.SpawnSeed(seedName)
+    end
 end)
 
-local eggBox = createInput("EggBox", "Egg Name (e.g. Night Egg)")
-createButton("Spawn Egg", function()
-    Spawner.SpawnEgg(eggBox.Text)
+-- Egg Tab
+local eggName = ""
+createInput(eggTab, "Egg Name", function(val) eggName = val end)
+createButton(eggTab, "Spawn Egg", function()
+    if eggName ~= "" then
+        Spawner.SpawnEgg(eggName)
+    end
 end)
 
-local spinBox = createInput("SpinBox", "Seed to Spin (e.g. Sunflower)")
-createButton("Spin", function()
-    Spawner.Spin(spinBox.Text)
+-- Dragging
+local dragging, dragInput, dragStart, startPos
+
+local function update(input)
+    local delta = input.Position - dragStart
+    main.Position = UDim2.new(
+        startPos.X.Scale,
+        startPos.X.Offset + delta.X,
+        startPos.Y.Scale,
+        startPos.Y.Offset + delta.Y
+    )
+end
+
+tabButtons.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = main.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
 end)
 
--- Done!
+UIS.InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        update(input)
+    end
+end)
