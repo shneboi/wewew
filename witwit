@@ -1,0 +1,96 @@
+-- Place this in a LocalScript inside StarterGui
+
+local Spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/ataturk123/GardenSpawner/refs/heads/main/Spawner.lua"))()
+
+-- Create GUI
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "CustomSpawnerGUI"
+screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Main Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 300, 0, 400)
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
+mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
+mainFrame.Draggable = true
+mainFrame.Parent = screenGui
+
+-- Title
+local title = Instance.new("TextLabel")
+title.Text = "Pet & Seed Spawner"
+title.Size = UDim2.new(1, 0, 0, 40)
+title.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+title.TextColor3 = Color3.new(1, 1, 1)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 20
+title.Parent = mainFrame
+
+-- UIListLayout
+local layout = Instance.new("UIListLayout")
+layout.Padding = UDim.new(0, 5)
+layout.FillDirection = Enum.FillDirection.Vertical
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+layout.Parent = mainFrame
+
+-- Function to create input field
+local function createInput(name, placeholder)
+    local input = Instance.new("TextBox")
+    input.PlaceholderText = placeholder
+    input.Text = ""
+    input.Size = UDim2.new(1, -20, 0, 30)
+    input.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    input.TextColor3 = Color3.new(1, 1, 1)
+    input.Font = Enum.Font.Gotham
+    input.TextSize = 14
+    input.ClearTextOnFocus = false
+    input.Name = name
+    input.Parent = mainFrame
+    return input
+end
+
+-- Function to create button
+local function createButton(text, callback)
+    local button = Instance.new("TextButton")
+    button.Text = text
+    button.Size = UDim2.new(1, -20, 0, 30)
+    button.BackgroundColor3 = Color3.fromRGB(70, 130, 180)
+    button.TextColor3 = Color3.new(1, 1, 1)
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 14
+    button.Parent = mainFrame
+    button.MouseButton1Click:Connect(callback)
+    return button
+end
+
+-- Inputs
+local petNameBox = createInput("PetNameBox", "Pet Name (e.g. Raccoon)")
+local petWeightBox = createInput("PetWeightBox", "Weight (e.g. 1)")
+local petAgeBox = createInput("PetAgeBox", "Age (e.g. 2)")
+
+createButton("Spawn Pet", function()
+    local name = petNameBox.Text
+    local weight = tonumber(petWeightBox.Text) or 1
+    local age = tonumber(petAgeBox.Text) or 1
+    Spawner.SpawnPet(name, weight, age)
+end)
+
+local seedBox = createInput("SeedBox", "Seed Name (e.g. Carrot)")
+createButton("Spawn Seed", function()
+    Spawner.SpawnSeed(seedBox.Text)
+end)
+
+local eggBox = createInput("EggBox", "Egg Name (e.g. Night Egg)")
+createButton("Spawn Egg", function()
+    Spawner.SpawnEgg(eggBox.Text)
+end)
+
+local spinBox = createInput("SpinBox", "Seed to Spin (e.g. Sunflower)")
+createButton("Spin", function()
+    Spawner.Spin(spinBox.Text)
+end)
+
+-- Done!
