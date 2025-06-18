@@ -22,7 +22,7 @@ gui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
 local main = Instance.new("Frame")
 main.Size = UDim2.new(0, 260, 0, 310)
 main.Position = UDim2.new(0.5, -130, 0.5, -155)
-main.BackgroundColor3 = Color3.fromRGB(3, 244, 202)
+main.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 main.BorderSizePixel = 0
 main.Parent = gui
 
@@ -31,8 +31,8 @@ corner.CornerRadius = UDim.new(0, 10)
 corner.Parent = main
 
 local stroke = Instance.new("UIStroke")
-stroke.Color = Color3.fromRGB(9, 255, 182)
-stroke.Thickness = 2
+stroke.Color = Color3.fromRGB(60, 60, 60)
+stroke.Thickness = 1
 stroke.Transparency = 0.3
 stroke.Parent = main
 
@@ -40,7 +40,7 @@ stroke.Parent = main
 local bg = Instance.new("Frame")
 bg.Size = UDim2.new(1, -10, 1, -40)
 bg.Position = UDim2.new(0, 5, 0, 35)
-bg.BackgroundColor3 = Color3.fromRGB(9, 255, 182)
+bg.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 bg.BorderSizePixel = 0
 bg.Parent = main
 
@@ -59,7 +59,7 @@ title.Size = UDim2.new(1, -60, 1, 0)
 title.Position = UDim2.new(0, 10, 0, 0)
 title.BackgroundTransparency = 1
 title.Text = "Rin Hub"
-title.TextColor3 = Color3.fromRGB(0, 0, 0)
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.TextSize = 16
 title.Font = Enum.Font.GothamBold
 title.TextXAlignment = Enum.TextXAlignment.Left
@@ -70,8 +70,8 @@ local minimizeBtn = Instance.new("TextButton")
 minimizeBtn.Size = UDim2.new(0, 25, 0, 25)
 minimizeBtn.Position = UDim2.new(1, -55, 0, 2)
 minimizeBtn.AnchorPoint = Vector2.new(1, 0)
-minimizeBtn.BackgroundColor3 = Color3.fromRGB(3, 244, 202)
-minimizeBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+minimizeBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+minimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 minimizeBtn.Text = "_"
 minimizeBtn.Font = Enum.Font.GothamBold
 minimizeBtn.TextSize = 18
@@ -86,8 +86,8 @@ local exitBtn = Instance.new("TextButton")
 exitBtn.Size = UDim2.new(0, 25, 0, 25)
 exitBtn.Position = UDim2.new(1, -25, 0, 2)
 exitBtn.AnchorPoint = Vector2.new(1, 0)
-exitBtn.BackgroundColor3 = Color3.fromRGB(3, 244, 202)
-exitBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+exitBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+exitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 exitBtn.Text = "X"
 exitBtn.Font = Enum.Font.GothamBold
 exitBtn.TextSize = 14
@@ -127,8 +127,8 @@ local function createTabButton(name)
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(0, 60, 0, 25)
     btn.Text = name
-    btn.BackgroundColor3 = Color3.fromRGB(3, 244, 202)
-    btn.TextColor3 = Color3.fromRGB(0, 0, 0)
+    btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
     btn.Font = Enum.Font.GothamBold
     btn.TextSize = 12
     btn.Parent = tabBar
@@ -171,47 +171,39 @@ local function createPetInputWithDetails(tabFrame)
     container.BackgroundTransparency = 1
     container.Parent = tabFrame
 
-    local nameBox = Instance.new("TextBox")
-    nameBox.Size = UDim2.new(1, 0, 0, 25)
-    nameBox.PlaceholderText = "Enter pet name..."
-    nameBox.Text = ""
-    nameBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    nameBox.TextColor3 = Color3.fromRGB(0, 0, 0)
-    nameBox.Font = Enum.Font.Gotham
-    nameBox.TextSize = 14
-    nameBox.Parent = container
+    local function makeInput(yPos, placeholder)
+        local box = Instance.new("TextBox")
+        box.Size = UDim2.new(1, 0, 0, 25)
+        box.Position = UDim2.new(0, 0, 0, yPos)
+        box.PlaceholderText = placeholder
+        box.Text = ""
+        box.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        box.TextColor3 = Color3.fromRGB(255, 255, 255)
+        box.Font = Enum.Font.Gotham
+        box.TextSize = 14
+        box.Parent = container
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(0, 6)
+        corner.Parent = box
+        return box
+    end
 
-    local ageBox = Instance.new("TextBox")
-    ageBox.Size = UDim2.new(1, 0, 0, 25)
-    ageBox.Position = UDim2.new(0, 0, 0, 30)
-    ageBox.PlaceholderText = "Enter age..."
-    ageBox.Text = ""
-    ageBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    ageBox.TextColor3 = Color3.fromRGB(0, 0, 0)
-    ageBox.Font = Enum.Font.Gotham
-    ageBox.TextSize = 14
-    ageBox.Parent = container
-
-    local weightBox = Instance.new("TextBox")
-    weightBox.Size = UDim2.new(1, 0, 0, 25)
-    weightBox.Position = UDim2.new(0, 0, 0, 60)
-    weightBox.PlaceholderText = "Enter weight..."
-    weightBox.Text = ""
-    weightBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    weightBox.TextColor3 = Color3.fromRGB(0, 0, 0)
-    weightBox.Font = Enum.Font.Gotham
-    weightBox.TextSize = 14
-    weightBox.Parent = container
+    local nameBox = makeInput(0, "Pet Name")
+    local ageBox = makeInput(30, "Age")
+    local weightBox = makeInput(60, "Weight")
 
     local spawnButton = Instance.new("TextButton")
     spawnButton.Size = UDim2.new(1, 0, 0, 25)
     spawnButton.Position = UDim2.new(0, 0, 0, 90)
     spawnButton.Text = "Spawn Pet"
-    spawnButton.BackgroundColor3 = Color3.fromRGB(3, 244, 202)
-    spawnButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+    spawnButton.BackgroundColor3 = Color3.fromRGB(80, 160, 100)
+    spawnButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     spawnButton.Font = Enum.Font.GothamBold
     spawnButton.TextSize = 14
     spawnButton.Parent = container
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 6)
+    corner.Parent = spawnButton
 
     spawnButton.MouseButton1Click:Connect(function()
         if nameBox.Text ~= "" and ageBox.Text ~= "" and weightBox.Text ~= "" then
@@ -232,12 +224,11 @@ local function createTabInputWithButton(tabFrame, buttonText, callback)
     inputBox.Size = UDim2.new(1, 0, 0, 30)
     inputBox.PlaceholderText = "Enter name..."
     inputBox.Text = ""
-    inputBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    inputBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+    inputBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    inputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
     inputBox.Font = Enum.Font.Gotham
     inputBox.TextSize = 14
     inputBox.Parent = container
-
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0, 6)
     corner.Parent = inputBox
@@ -246,12 +237,11 @@ local function createTabInputWithButton(tabFrame, buttonText, callback)
     spawnButton.Size = UDim2.new(1, 0, 0, 25)
     spawnButton.Position = UDim2.new(0, 0, 0, 35)
     spawnButton.Text = buttonText
-    spawnButton.BackgroundColor3 = Color3.fromRGB(3, 244, 202)
-    spawnButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+    spawnButton.BackgroundColor3 = Color3.fromRGB(80, 160, 100)
+    spawnButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     spawnButton.Font = Enum.Font.GothamBold
     spawnButton.TextSize = 14
     spawnButton.Parent = container
-
     local btnCorner = Instance.new("UICorner")
     btnCorner.CornerRadius = UDim.new(0, 6)
     btnCorner.Parent = spawnButton
@@ -271,18 +261,9 @@ local spinTab = createTabButton("Spin")
 
 -- Input fields for manual spawning
 createPetInputWithDetails(petTab)
-
-createTabInputWithButton(seedTab, "Spawn Seed", function(name)
-    Spawner.SpawnSeed(name)
-end)
-
-createTabInputWithButton(eggTab, "Spawn Egg", function(name)
-    Spawner.SpawnEgg(name)
-end)
-
-createTabInputWithButton(spinTab, "Spin", function(name)
-    Spawner.Spin(name)
-end)
+createTabInputWithButton(seedTab, "Spawn Seed", Spawner.SpawnSeed)
+createTabInputWithButton(eggTab, "Spawn Egg", Spawner.SpawnEgg)
+createTabInputWithButton(spinTab, "Spin", Spawner.Spin)
 
 -- Show first tab by default
 tabFrames["Pet"].Visible = true
