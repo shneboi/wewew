@@ -20,8 +20,8 @@ gui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
 
 -- Main Frame
 local main = Instance.new("Frame")
-main.Size = UDim2.new(0, 240, 0, 300)
-main.Position = UDim2.new(0.5, -120, 0.5, -150)
+main.Size = UDim2.new(0, 260, 0, 310)
+main.Position = UDim2.new(0.5, -130, 0.5, -155)
 main.BackgroundColor3 = Color3.fromRGB(3, 244, 202)
 main.BorderSizePixel = 0
 main.Parent = gui
@@ -99,8 +99,8 @@ exitCorner.Parent = exitBtn
 
 -- Content Frame
 local contentFrame = Instance.new("Frame")
-contentFrame.Size = UDim2.new(1, -10, 1, -45)
-contentFrame.Position = UDim2.new(0.5, 0, 0, 35)
+contentFrame.Size = UDim2.new(1, -10, 1, -70)
+contentFrame.Position = UDim2.new(0.5, 0, 0, 60)
 contentFrame.AnchorPoint = Vector2.new(0.5, 0)
 contentFrame.BackgroundTransparency = 1
 contentFrame.Parent = main
@@ -148,6 +148,7 @@ local function createTabButton(name)
     tabList.Padding = UDim.new(0, 10)
     tabList.SortOrder = Enum.SortOrder.LayoutOrder
     tabList.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    tabList.VerticalAlignment = Enum.VerticalAlignment.Top
     tabList.Parent = tabFrame
 
     tabFrames[name] = tabFrame
@@ -164,8 +165,8 @@ end
 
 local function createPetInputWithDetails(tabFrame)
     local container = Instance.new("Frame")
-    container.Size = UDim2.new(0, 180, 0, 120)
-    container.Position = UDim2.new(0.5, 0, 0, 20)
+    container.Size = UDim2.new(0, 200, 0, 140)
+    container.Position = UDim2.new(0.5, 0, 0, 10)
     container.AnchorPoint = Vector2.new(0.5, 0)
     container.BackgroundTransparency = 1
     container.Parent = tabFrame
@@ -221,7 +222,7 @@ end
 
 local function createTabInputWithButton(tabFrame, buttonText, callback)
     local container = Instance.new("Frame")
-    container.Size = UDim2.new(0, 160, 0, 60)
+    container.Size = UDim2.new(0, 200, 0, 60)
     container.Position = UDim2.new(0.5, 0, 0, 20)
     container.AnchorPoint = Vector2.new(0.5, 0)
     container.BackgroundTransparency = 1
@@ -280,7 +281,7 @@ createTabInputWithButton(eggTab, "Spawn Egg", function(name)
 end)
 
 createTabInputWithButton(spinTab, "Spin", function(name)
-    Spawner.SpawnSpin(name)
+    Spawner.Spin(name)
 end)
 
 -- Show first tab by default
@@ -289,7 +290,7 @@ tabFrames["Pet"].Visible = true
 -- Minimize
 local minimized = false
 local originalSize = main.Size
-local minimizedSize = UDim2.new(0, 240, 0, 30)
+local minimizedSize = UDim2.new(0, 260, 0, 30)
 
 minimizeBtn.MouseButton1Click:Connect(function()
     minimized = not minimized
