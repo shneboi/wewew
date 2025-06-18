@@ -165,6 +165,8 @@ end
 local function createPetInputWithDetails(tabFrame)
     local container = Instance.new("Frame")
     container.Size = UDim2.new(0, 180, 0, 120)
+    container.Position = UDim2.new(0.5, 0, 0, 20)
+    container.AnchorPoint = Vector2.new(0.5, 0)
     container.BackgroundTransparency = 1
     container.Parent = tabFrame
 
@@ -220,6 +222,8 @@ end
 local function createTabInputWithButton(tabFrame, buttonText, callback)
     local container = Instance.new("Frame")
     container.Size = UDim2.new(0, 160, 0, 60)
+    container.Position = UDim2.new(0.5, 0, 0, 20)
+    container.AnchorPoint = Vector2.new(0.5, 0)
     container.BackgroundTransparency = 1
     container.Parent = tabFrame
 
@@ -262,6 +266,7 @@ end
 local petTab = createTabButton("Pet")
 local seedTab = createTabButton("Seed")
 local eggTab = createTabButton("Egg")
+local spinTab = createTabButton("Spin")
 
 -- Input fields for manual spawning
 createPetInputWithDetails(petTab)
@@ -272,6 +277,10 @@ end)
 
 createTabInputWithButton(eggTab, "Spawn Egg", function(name)
     Spawner.SpawnEgg(name)
+end)
+
+createTabInputWithButton(spinTab, "Spin", function(name)
+    Spawner.SpawnSpin(name)
 end)
 
 -- Show first tab by default
