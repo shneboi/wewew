@@ -42,7 +42,7 @@ stroke.Parent = main
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 40)
 title.BackgroundTransparency = 1
-title.Text = "Spawner"
+title.Text = "Rin Scripts"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.TextSize = 20
 title.Font = Enum.Font.GothamBold
@@ -69,7 +69,7 @@ content.BackgroundTransparency = 1
 content.Parent = main
 
 local function createInput(placeholder)
-    local box = Instance.new("TextBox")
+    local box = Instance.new(" ")
     box.Size = UDim2.new(0, 220, 0, 36)
     box.PlaceholderText = placeholder
     box.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
