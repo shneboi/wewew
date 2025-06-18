@@ -151,9 +151,17 @@ end
 local petTab = createTab("Pet")
 local petInput = createInput("Pet Name")
 petInput.Parent = petTab
+local ageInput = createInput("Age")
+ageInput.Parent = petTab
+local weightInput = createInput("Weight")
+weightInput.Parent = petTab
 local petButton = createButton("Spawn", function()
-    if petInput.Text ~= "" then
-        Spawner.SpawnPet(petInput.Text, 0, 0)
+    if petInput.Text ~= "" and ageInput.Text ~= "" and weightInput.Text ~= "" then
+        local age = tonumber(ageInput.Text)
+        local weight = tonumber(weightInput.Text)
+        if age and weight then
+            Spawner.SpawnPet(petInput.Text, age, weight)
+        end
     end
 end)
 petButton.Parent = petTab
