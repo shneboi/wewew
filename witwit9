@@ -1,0 +1,195 @@
+-- Services
+local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
+local TS = game:GetService("TweenService")
+
+-- Load Spawner library
+local success, Spawner = pcall(function()
+    return loadstring(game:HttpGet("https://raw.githubusercontent.com/ataturk123/GardenSpawner/refs/heads/main/Spawner.lua"))()
+end)
+
+if not success or not Spawner then
+    warn("Failed to load Spawner module.")
+    return
+end
+
+-- UI Setup
+local gui = Instance.new("ScreenGui")
+gui.ResetOnSpawn = false
+gui.Name = "ModernSpawnerUI"
+gui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Main Frame
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0, 320, 0, 400)
+main.Position = UDim2.new(0.5, 0, 0.5, 0)
+main.AnchorPoint = Vector2.new(0.5, 0.5)
+main.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+main.BorderSizePixel = 0
+main.Parent = gui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 10)
+corner.Parent = main
+
+local stroke = Instance.new("UIStroke")
+stroke.Color = Color3.fromRGB(60, 60, 60)
+stroke.Thickness = 1
+stroke.Transparency = 0.3
+stroke.Parent = main
+
+-- Title
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 40)
+title.BackgroundTransparency = 1
+title.Text = "Spawner"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextSize = 20
+title.Font = Enum.Font.GothamBold
+title.Parent = main
+
+-- Tab Buttons
+local tabBar = Instance.new("Frame")
+tabBar.Size = UDim2.new(1, -20, 0, 30)
+tabBar.Position = UDim2.new(0, 10, 0, 45)
+tabBar.BackgroundTransparency = 1
+tabBar.Parent = main
+
+local tabLayout = Instance.new("UIListLayout")
+tabLayout.FillDirection = Enum.FillDirection.Horizontal
+tabLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+tabLayout.Padding = UDim.new(0, 8)
+tabLayout.Parent = tabBar
+
+local content = Instance.new("Frame")
+content.Size = UDim2.new(1, -40, 1, -90)
+content.Position = UDim2.new(0, 20, 0, 80)
+content.BackgroundTransparency = 1
+content.Parent = main
+
+local function createInput(placeholder)
+    local box = Instance.new("TextBox")
+    box.Size = UDim2.new(0, 220, 0, 36)
+    box.PlaceholderText = placeholder
+    box.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    box.TextColor3 = Color3.fromRGB(255, 255, 255)
+    box.Font = Enum.Font.Gotham
+    box.TextSize = 16
+    box.ClearTextOnFocus = false
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = box
+    local stroke = Instance.new("UIStroke")
+    stroke.Color = Color3.fromRGB(60, 60, 60)
+    stroke.Thickness = 1
+    stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    stroke.Parent = box
+    return box
+end
+
+local function createButton(text, callback)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0, 220, 0, 36)
+    btn.Text = text
+    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    btn.TextColor3 = Color3.fromRGB(180, 180, 180)
+    btn.Font = Enum.Font.GothamSemibold
+    btn.TextSize = 16
+    btn.AutoButtonColor = false
+    btn.Active = true
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = btn
+    local stroke = Instance.new("UIStroke")
+    stroke.Color = Color3.fromRGB(60, 60, 60)
+    stroke.Thickness = 1
+    stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    stroke.Parent = btn
+    btn.MouseButton1Click:Connect(callback)
+    return btn
+end
+
+local tabFrames = {}
+
+local function createTab(name)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0, 70, 1, 0)
+    button.Text = name
+    button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.Font = Enum.Font.GothamSemibold
+    button.TextSize = 14
+    button.AutoButtonColor = true
+    button.Parent = tabBar
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 6)
+    corner.Parent = button
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 1, 0)
+    frame.BackgroundTransparency = 1
+    frame.Visible = false
+    frame.Parent = content
+
+    local layout = Instance.new("UIListLayout")
+    layout.Padding = UDim.new(0, 10)
+    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Parent = frame
+
+    button.MouseButton1Click:Connect(function()
+        for _, f in pairs(tabFrames) do f.Visible = false end
+        frame.Visible = true
+    end)
+
+    tabFrames[name] = frame
+    return frame
+end
+
+-- Pet Tab
+local petTab = createTab("Pet")
+local petInput = createInput("Pet Name")
+petInput.Parent = petTab
+local petButton = createButton("Spawn", function()
+    if petInput.Text ~= "" then
+        Spawner.SpawnPet(petInput.Text, 0, 0)
+    end
+end)
+petButton.Parent = petTab
+
+-- Seed Tab
+local seedTab = createTab("Seed")
+local seedInput = createInput("Seed Name")
+seedInput.Parent = seedTab
+local seedButton = createButton("Spawn", function()
+    if seedInput.Text ~= "" then
+        Spawner.SpawnSeed(seedInput.Text)
+    end
+end)
+seedButton.Parent = seedTab
+
+-- Egg Tab
+local eggTab = createTab("Egg")
+local eggInput = createInput("Egg Name")
+eggInput.Parent = eggTab
+local eggButton = createButton("Spawn", function()
+    if eggInput.Text ~= "" then
+        Spawner.SpawnEgg(eggInput.Text)
+    end
+end)
+eggButton.Parent = eggTab
+
+-- Spin Tab
+local spinTab = createTab("Spin")
+local spinInput = createInput("Seed Name to Spin")
+spinInput.Parent = spinTab
+local spinButton = createButton("Spin", function()
+    if spinInput.Text ~= "" then
+        Spawner.Spin(spinInput.Text)
+    end
+end)
+spinButton.Parent = spinTab
+
+-- Show default tab
+petTab.Visible = true
