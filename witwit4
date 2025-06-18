@@ -84,31 +84,12 @@ local minimizeCorner = Instance.new("UICorner")
 minimizeCorner.CornerRadius = UDim.new(0, 6)
 minimizeCorner.Parent = minimizeBtn
 
--- Minimize logic
-local minimized = false
-local originalSize = main.Size
-minimizeBtn.MouseButton1Click:Connect(function()
-    minimized = not minimized
-    if minimized then
-        main.Size = UDim2.new(0, 320, 0, 50)
-        for _, child in ipairs(main:GetChildren()) do
-            if child ~= title and child ~= minimizeBtn and child ~= exitBtn then
-                child.Visible = false
-            end
-        end
-    else
-        main.Size = originalSize
-        for _, child in ipairs(main:GetChildren()) do
-            child.Visible = true
-        end
-    end
-end)
-
 -- Tab Buttons
 local tabBar = Instance.new("Frame")
 tabBar.Size = UDim2.new(1, -20, 0, 30)
 tabBar.Position = UDim2.new(0, 10, 0, 45)
 tabBar.BackgroundTransparency = 1
+tabBar.Name = "TabBar"
 tabBar.Parent = main
 
 local tabLayout = Instance.new("UIListLayout")
@@ -122,7 +103,24 @@ local content = Instance.new("Frame")
 content.Size = UDim2.new(1, -40, 1, -90)
 content.Position = UDim2.new(0, 20, 0, 80)
 content.BackgroundTransparency = 1
+content.Name = "Content"
 content.Parent = main
+
+-- Minimize logic
+local minimized = false
+local originalSize = main.Size
+minimizeBtn.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    if minimized then
+        main.Size = UDim2.new(0, 320, 0, 50)
+        tabBar.Visible = false
+        content.Visible = false
+    else
+        main.Size = originalSize
+        tabBar.Visible = true
+        content.Visible = true
+    end
+end)
 
 local function createInput(placeholder)
     local box = Instance.new("TextBox")
@@ -149,8 +147,8 @@ local function createButton(text, callback)
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(0, 220, 0, 36)
     btn.Text = text
-    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    btn.TextColor3 = Color3.fromRGB(180, 180, 180)
+    btn.BackgroundColor3 = Color3.fromRGB(70, 130, 180) -- Steel Blue
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
     btn.Font = Enum.Font.GothamSemibold
     btn.TextSize = 16
     btn.AutoButtonColor = false
@@ -220,8 +218,7 @@ local petButton = createButton("Spawn", function()
             Spawner.SpawnPet(petInput.Text, age, weight)
         end
     end
-end)
-petButton.Parent = petTab
+end)\npetButton.Parent = petTab
 
 -- Seed Tab
 local seedTab = createTab("Seed")
