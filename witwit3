@@ -99,8 +99,8 @@ exitCorner.Parent = exitBtn
 
 -- Content Frame
 local contentFrame = Instance.new("Frame")
-contentFrame.Size = UDim2.new(1, -10, 1, -65)
-contentFrame.Position = UDim2.new(0.5, 0, 0, 60)
+contentFrame.Size = UDim2.new(1, -10, 1, -45)
+contentFrame.Position = UDim2.new(0.5, 0, 0, 35)
 contentFrame.AnchorPoint = Vector2.new(0.5, 0)
 contentFrame.BackgroundTransparency = 1
 contentFrame.Parent = main
@@ -162,9 +162,64 @@ local function createTabButton(name)
     return tabFrame
 end
 
+local function createPetInputWithDetails(tabFrame)
+    local container = Instance.new("Frame")
+    container.Size = UDim2.new(0, 180, 0, 120)
+    container.BackgroundTransparency = 1
+    container.Parent = tabFrame
+
+    local nameBox = Instance.new("TextBox")
+    nameBox.Size = UDim2.new(1, 0, 0, 25)
+    nameBox.PlaceholderText = "Enter pet name..."
+    nameBox.Text = ""
+    nameBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    nameBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+    nameBox.Font = Enum.Font.Gotham
+    nameBox.TextSize = 14
+    nameBox.Parent = container
+
+    local ageBox = Instance.new("TextBox")
+    ageBox.Size = UDim2.new(1, 0, 0, 25)
+    ageBox.Position = UDim2.new(0, 0, 0, 30)
+    ageBox.PlaceholderText = "Enter age..."
+    ageBox.Text = ""
+    ageBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    ageBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+    ageBox.Font = Enum.Font.Gotham
+    ageBox.TextSize = 14
+    ageBox.Parent = container
+
+    local weightBox = Instance.new("TextBox")
+    weightBox.Size = UDim2.new(1, 0, 0, 25)
+    weightBox.Position = UDim2.new(0, 0, 0, 60)
+    weightBox.PlaceholderText = "Enter weight..."
+    weightBox.Text = ""
+    weightBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    weightBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+    weightBox.Font = Enum.Font.Gotham
+    weightBox.TextSize = 14
+    weightBox.Parent = container
+
+    local spawnButton = Instance.new("TextButton")
+    spawnButton.Size = UDim2.new(1, 0, 0, 25)
+    spawnButton.Position = UDim2.new(0, 0, 0, 90)
+    spawnButton.Text = "Spawn Pet"
+    spawnButton.BackgroundColor3 = Color3.fromRGB(3, 244, 202)
+    spawnButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+    spawnButton.Font = Enum.Font.GothamBold
+    spawnButton.TextSize = 14
+    spawnButton.Parent = container
+
+    spawnButton.MouseButton1Click:Connect(function()
+        if nameBox.Text ~= "" and ageBox.Text ~= "" and weightBox.Text ~= "" then
+            Spawner.SpawnPet(nameBox.Text, tonumber(ageBox.Text), tonumber(weightBox.Text))
+        end
+    end)
+end
+
 local function createTabInputWithButton(tabFrame, buttonText, callback)
     local container = Instance.new("Frame")
-    container.Size = UDim2.new(0, 180, 0, 60)
+    container.Size = UDim2.new(0, 160, 0, 60)
     container.BackgroundTransparency = 1
     container.Parent = tabFrame
 
@@ -209,9 +264,7 @@ local seedTab = createTabButton("Seed")
 local eggTab = createTabButton("Egg")
 
 -- Input fields for manual spawning
-createTabInputWithButton(petTab, "Spawn Pet", function(name)
-    Spawner.SpawnPet(name, 1, 2)
-end)
+createPetInputWithDetails(petTab)
 
 createTabInputWithButton(seedTab, "Spawn Seed", function(name)
     Spawner.SpawnSeed(name)
