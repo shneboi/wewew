@@ -20,8 +20,8 @@ gui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
 
 -- Main Frame
 local main = Instance.new("Frame")
-main.Size = UDim2.new(0, 200, 0, 200)
-main.Position = UDim2.new(0.5, -100, 0.5, -100)
+main.Size = UDim2.new(0, 240, 0, 300)
+main.Position = UDim2.new(0.5, -120, 0.5, -150)
 main.BackgroundColor3 = Color3.fromRGB(3, 244, 202)
 main.BorderSizePixel = 0
 main.Parent = gui
@@ -99,8 +99,8 @@ exitCorner.Parent = exitBtn
 
 -- Content Frame
 local contentFrame = Instance.new("Frame")
-contentFrame.Size = UDim2.new(1, -10, 1, -45)
-contentFrame.Position = UDim2.new(0.5, 0, 0, 35)
+contentFrame.Size = UDim2.new(1, -10, 1, -65)
+contentFrame.Position = UDim2.new(0.5, 0, 0, 60)
 contentFrame.AnchorPoint = Vector2.new(0.5, 0)
 contentFrame.BackgroundTransparency = 1
 contentFrame.Parent = main
@@ -162,21 +162,45 @@ local function createTabButton(name)
     return tabFrame
 end
 
-local function createTabButtonItem(text, parent, callback)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, 160, 0, 30)
-    btn.Text = text
-    btn.BackgroundColor3 = Color3.fromRGB(3, 244, 202)
-    btn.TextColor3 = Color3.fromRGB(0, 0, 0)
-    btn.Font = Enum.Font.GothamBold
-    btn.TextSize = 14
-    btn.Parent = parent
+local function createTabInputWithButton(tabFrame, buttonText, callback)
+    local container = Instance.new("Frame")
+    container.Size = UDim2.new(0, 180, 0, 60)
+    container.BackgroundTransparency = 1
+    container.Parent = tabFrame
+
+    local inputBox = Instance.new("TextBox")
+    inputBox.Size = UDim2.new(1, 0, 0, 30)
+    inputBox.PlaceholderText = "Enter name..."
+    inputBox.Text = ""
+    inputBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    inputBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+    inputBox.Font = Enum.Font.Gotham
+    inputBox.TextSize = 14
+    inputBox.Parent = container
 
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0, 6)
-    corner.Parent = btn
+    corner.Parent = inputBox
 
-    btn.MouseButton1Click:Connect(callback)
+    local spawnButton = Instance.new("TextButton")
+    spawnButton.Size = UDim2.new(1, 0, 0, 25)
+    spawnButton.Position = UDim2.new(0, 0, 0, 35)
+    spawnButton.Text = buttonText
+    spawnButton.BackgroundColor3 = Color3.fromRGB(3, 244, 202)
+    spawnButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+    spawnButton.Font = Enum.Font.GothamBold
+    spawnButton.TextSize = 14
+    spawnButton.Parent = container
+
+    local btnCorner = Instance.new("UICorner")
+    btnCorner.CornerRadius = UDim.new(0, 6)
+    btnCorner.Parent = spawnButton
+
+    spawnButton.MouseButton1Click:Connect(function()
+        if inputBox.Text ~= "" then
+            callback(inputBox.Text)
+        end
+    end)
 end
 
 -- Create Tabs
@@ -184,23 +208,17 @@ local petTab = createTabButton("Pet")
 local seedTab = createTabButton("Seed")
 local eggTab = createTabButton("Egg")
 
--- Pet Tab Content
-for _, pet in pairs(Spawner.GetPets()) do
-    createTabButtonItem("Spawn " .. pet, petTab, function()
-        Spawner.SpawnPet(pet, 1, 2)
-    end)
-end
+-- Input fields for manual spawning
+createTabInputWithButton(petTab, "Spawn Pet", function(name)
+    Spawner.SpawnPet(name, 1, 2)
+end)
 
--- Seed Tab Content
-for _, seed in pairs(Spawner.GetSeeds()) do
-    createTabButtonItem("Spawn " .. seed, seedTab, function()
-        Spawner.SpawnSeed(seed)
-    end)
-end
+createTabInputWithButton(seedTab, "Spawn Seed", function(name)
+    Spawner.SpawnSeed(name)
+end)
 
--- Egg Example
-createTabButtonItem("Spawn Night Egg", eggTab, function()
-    Spawner.SpawnEgg("Night Egg")
+createTabInputWithButton(eggTab, "Spawn Egg", function(name)
+    Spawner.SpawnEgg(name)
 end)
 
 -- Show first tab by default
@@ -209,7 +227,7 @@ tabFrames["Pet"].Visible = true
 -- Minimize
 local minimized = false
 local originalSize = main.Size
-local minimizedSize = UDim2.new(0, 200, 0, 30)
+local minimizedSize = UDim2.new(0, 240, 0, 30)
 
 minimizeBtn.MouseButton1Click:Connect(function()
     minimized = not minimized
