@@ -26,6 +26,8 @@ main.Position = UDim2.new(0.5, 0, 0.5, 0)
 main.AnchorPoint = Vector2.new(0.5, 0.5)
 main.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 main.BorderSizePixel = 0
+main.Active = true
+main.Draggable = true
 main.Parent = gui
 
 local corner = Instance.new("UICorner")
@@ -40,13 +42,67 @@ stroke.Parent = main
 
 -- Title
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 40)
+title.Size = UDim2.new(1, -60, 0, 40)
+title.Position = UDim2.new(0, 10, 0, 0)
 title.BackgroundTransparency = 1
 title.Text = "Rin Scripts"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.TextSize = 20
 title.Font = Enum.Font.GothamBold
+title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = main
+
+-- Exit Button
+local exitBtn = Instance.new("TextButton")
+exitBtn.Size = UDim2.new(0, 24, 0, 24)
+exitBtn.Position = UDim2.new(1, -30, 0, 8)
+exitBtn.Text = "X"
+exitBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+exitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+exitBtn.Font = Enum.Font.GothamBold
+exitBtn.TextSize = 14
+exitBtn.Parent = main
+local exitCorner = Instance.new("UICorner")
+exitCorner.CornerRadius = UDim.new(0, 6)
+exitCorner.Parent = exitBtn
+
+exitBtn.MouseButton1Click:Connect(function()
+    gui:Destroy()
+end)
+
+-- Minimize Button
+local minimizeBtn = Instance.new("TextButton")
+minimizeBtn.Size = UDim2.new(0, 24, 0, 24)
+minimizeBtn.Position = UDim2.new(1, -60, 0, 8)
+minimizeBtn.Text = "_"
+minimizeBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+minimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimizeBtn.Font = Enum.Font.GothamBold
+minimizeBtn.TextSize = 18
+minimizeBtn.Parent = main
+local minimizeCorner = Instance.new("UICorner")
+minimizeCorner.CornerRadius = UDim.new(0, 6)
+minimizeCorner.Parent = minimizeBtn
+
+-- Minimize logic
+local minimized = false
+local originalSize = main.Size
+minimizeBtn.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    if minimized then
+        main.Size = UDim2.new(0, 320, 0, 50)
+        for _, child in ipairs(main:GetChildren()) do
+            if child ~= title and child ~= minimizeBtn and child ~= exitBtn then
+                child.Visible = false
+            end
+        end
+    else
+        main.Size = originalSize
+        for _, child in ipairs(main:GetChildren()) do
+            child.Visible = true
+        end
+    end
+end)
 
 -- Tab Buttons
 local tabBar = Instance.new("Frame")
@@ -72,6 +128,7 @@ local function createInput(placeholder)
     local box = Instance.new("TextBox")
     box.Size = UDim2.new(0, 220, 0, 36)
     box.PlaceholderText = placeholder
+    box.Text = ""
     box.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     box.TextColor3 = Color3.fromRGB(255, 255, 255)
     box.Font = Enum.Font.Gotham
