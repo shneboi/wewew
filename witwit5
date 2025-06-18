@@ -115,10 +115,19 @@ minimizeBtn.MouseButton1Click:Connect(function()
         main.Size = UDim2.new(0, 320, 0, 50)
         tabBar.Visible = false
         content.Visible = false
+        for _, f in pairs(content:GetChildren()) do
+            if f:IsA("Frame") then
+                f.Visible = false
+            end
+        end
     else
         main.Size = originalSize
         tabBar.Visible = true
         content.Visible = true
+        for _, f in pairs(tabFrames) do
+            f.Visible = false
+        end
+        petTab.Visible = true
     end
 end)
 
@@ -218,7 +227,8 @@ local petButton = createButton("Spawn", function()
             Spawner.SpawnPet(petInput.Text, age, weight)
         end
     end
-end)\npetButton.Parent = petTab
+end)
+petButton.Parent = petTab
 
 -- Seed Tab
 local seedTab = createTab("Seed")
